@@ -260,8 +260,10 @@ $('f').addEventListener('submit',async e=>{
     const dados={nome:v('nome'),pedido:v('pedido'),cpf:v('cpf'),email:v('email'),whatsapp:v('whats'),
       dnpMedida:v('dnpMedida'),obs:v('obs'),receita:await pack(arquivos.rec),dnp:await pack(arquivos.dnp)};
     const falha=t=>{btn.disabled=false;btn.textContent='Enviar receita';erro(t||'Não foi possível enviar. Verifique sua internet e tente novamente.')};
-    fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({acao:'enviar',dados})})
-      .then(r=>r.json())
+    const corpo=JSON.stringify({acao:'enviar',dados});
+    const tentar=n=>fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:corpo}).then(r=>r.json()).catch(e=>{if(n>0)return new Promise(ok=>setTimeout(ok,2500)).then(()=>tentar(n-1));throw e});
+    btn.textContent='Enviando… pode levar alguns segundos';
+    tentar(2)
       .then(r=>{if(!r.ok)return falha(String(r.erro||'').replace(/^.*?Exception:\s*/,''));$('prot').textContent=r.protocolo;$('telaForm').hidden=true;$('telaOk').hidden=false;window.scrollTo(0,0)})
       .catch(()=>falha());
   }catch(x){btn.disabled=false;btn.textContent='Enviar receita';erro('Não foi possível ler um dos arquivos. Tente anexar novamente.')}
