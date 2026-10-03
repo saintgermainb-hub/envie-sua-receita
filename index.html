@@ -92,7 +92,7 @@ textarea{min-height:84px;resize:vertical}
   <div id="telaForm">
     <div class="avisos">
     <div class="aviso"><strong>Lentes multifocais</strong>No momento não confeccionamos lentes multifocais. No campo <b style="font-weight:400;color:var(--preto)">Observações</b>, informe qual lente você deseja.</div>
-    <div class="aviso"><strong>Prazo de confecção</strong>Após a confirmação do pagamento e o envio da receita, inicia-se o prazo de confecção de até 7 dias úteis, somado ao prazo de envio definido no momento da sua compra.</div>
+    <div class="aviso"><strong>Prazo de confecção</strong>Após a confirmação do pagamento e o envio da receita, inicia-se o prazo de confecção de até <span id="prazoDias">10</span> dias úteis, somado ao prazo de envio definido no momento da sua compra.</div>
     </div>
 
     <form id="f" novalidate>
@@ -199,6 +199,7 @@ textarea{min-height:84px;resize:vertical}
 
 <script>
 const API='https://script.google.com/macros/s/AKfycbwZkxJmo1GvlrCaIik8hIcyn8B5ZZqFa_ylJLM8QNfoGr99-Bct57RBseYUxvnLTrog/exec';
+fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({acao:'config'})}).then(r=>r.json()).then(r=>{if(r.ok&&r.config&&r.config.prazoDias)document.getElementById('prazoDias').textContent=r.config.prazoDias}).catch(()=>{});
 const $=id=>document.getElementById(id);
 const arquivos={rec:[],dnp:[]};
 const MAX_LADO=2000, QUAL=0.85;
